@@ -1,0 +1,6 @@
+framework module JZTUniBoost {
+  umbrella header "JZTUniBoost-umbrella.h"
+
+  export *
+  module * { export * }
+}
