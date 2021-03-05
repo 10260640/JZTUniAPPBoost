@@ -9,6 +9,7 @@
 #import "DCUniMP.h"
 #import "JZTUniAppLoadingVC.h"
 #import "JZTUniAppManager.h"
+#import <AFNetworking/AFNetworkReachabilityManager.h>
 
 @implementation JZTUniAppModel
 
@@ -21,9 +22,11 @@
     dispatch_queue_t squeue;
 }
 @property (strong,atomic) NSMutableArray<NSURLSessionDataTask*> *taskList;
+@property (strong,atomic) NSMutableArray<JZTUniAppModel*> *modelList;
 @property (nonatomic, weak) DCUniMPInstance *uniMPInstance;
 @property (nonatomic,strong) JZTUniAppLoadingVC *loadingVC;
 @property (nonatomic,strong) NSURLSessionDataTask *cureentTask;
+@property (nonatomic) JZTUniNetWorkState netWorkState;
 @end
 
 @implementation JZTUNIEngine
@@ -44,6 +47,7 @@
         queue = dispatch_queue_create("com.jztuni.download", DISPATCH_QUEUE_CONCURRENT);
         squeue = dispatch_queue_create("com.jztuni.sdonwload", DISPATCH_QUEUE_SERIAL);
         self.taskList = [NSMutableArray arrayWithCapacity:0];
+        [self configNetWork];
     }
     return self;
 }
@@ -64,18 +68,23 @@
         }];
     }
     else{
-        
         if (self.cureentTask) {
             [self.cureentTask cancel];
             self.cureentTask = nil;
         }
-        [self removeDownLoadTask:model.downUrl];
         
+        [self removeDownLoadTask:model.downUrl];
+        if (self.netWorkState == JZTUNiNetWorkStatusReachable3G4G) {
+            [self stopDownload];
+        }
+        else if(self.netWorkState == JZTUniNetWorkStatusUnknown || self.netWorkState == JZTUniNetWorkStatusNotReachable)
+        {
+            [self cancelAll];
+        }
         
         if (exists && [self canUpdate:model]) {
             [JZTUniAppManager removeTempFile:model.downUrl];
         }
-        
         self.cureentTask = [JZTUniAppManager downloadreUseApp:model.downUrl progress:^(double downloadProgressValue) {
             progress(downloadProgressValue);
         } destination:^(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
@@ -295,14 +304,18 @@
 
 - (void)backGroundDownload:(NSArray<JZTUniAppModel*>*)downLoadList queueType:(JZTQUEUEType)queueType;
 {
+    if (self.netWorkState != JZTUNiNetWorkStatusReachableViaWiFi) {
+        return;
+    }
     NSArray<JZTUniAppModel*> *modelList = [self getDownLoadList:downLoadList];
     if (!modelList.count) {
         return;
     }
+    self.modelList = [NSMutableArray arrayWithArray:modelList];
     __weak __typeof(self)weakSelf = self;
     
     if (queueType == JZTCONCURRENT) {
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(modelList.count==1?1:2);
+//        dispatch_semaphore_t semaphore = dispatch_semaphore_create(modelList.count==1?1:2);
         for (JZTUniAppModel *model in modelList) {
             dispatch_group_enter(group);
             dispatch_group_async(group, queue, ^{
@@ -313,10 +326,10 @@
                     
                 } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                     dispatch_group_leave(strongSelf->group);
-                    dispatch_semaphore_signal(semaphore);
+//                    dispatch_semaphore_signal(semaphore);
                 }];
                 [self.taskList addObject:task];
-                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+//                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
             });
         }
     }
@@ -339,6 +352,7 @@
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         [weakSelf removeAllTask];
+        [weakSelf.modelList removeAllObjects];
     });
 }
 
@@ -348,6 +362,17 @@
         if ([task.currentRequest.URL.absoluteString isEqualToString:url]) {
             [task cancel];
             [self.taskList removeObject:task];
+            [self removeDownList:url];
+            break;
+        }
+    }
+}
+
+- (void)removeDownList:(NSString*)url
+{
+    for (JZTUniAppModel *model in self.modelList) {
+        if ([model.downUrl isEqualToString:url]) {
+            [self.modelList removeObject:model];
             break;
         }
     }
@@ -391,19 +416,61 @@
     return NO;
 }
 
-
 - (void)stopDownload
 {
     for (NSURLSessionDataTask *task in self.taskList) {
-        [task suspend];
+        [task cancel];
     }
+    [self.taskList removeAllObjects];
 }
 
 - (void)reuseDownload
 {
-    for (NSURLSessionDataTask *task in self.taskList) {
-        [task resume];
+    if (self.modelList.count) {
+        [self backGroundDownload:self.modelList queueType:JZTCONCURRENT];
     }
+}
+
+- (void)cancelAll
+{
+    for (NSURLSessionDataTask *task in self.taskList) {
+        [task cancel];
+    }
+    [self.taskList removeAllObjects];
+    [self.modelList removeAllObjects];
+}
+
+- (void)configNetWork
+{
+    __weak __typeof(self)weakSelf = self;
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager  sharedManager];
+    [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus  status) {
+            switch (status) {
+            case  AFNetworkReachabilityStatusUnknown:
+                    NSLog(@"未知");
+                    weakSelf.netWorkState = JZTUniNetWorkStatusUnknown;
+                    [weakSelf stopDownload];
+                    break;
+            case AFNetworkReachabilityStatusNotReachable:
+                    NSLog(@"没有网络");
+                    weakSelf.netWorkState = JZTUniNetWorkStatusNotReachable;
+                    [weakSelf stopDownload];
+                    break;
+            case AFNetworkReachabilityStatusReachableViaWWAN:
+                    NSLog(@"3G|4G");
+                    weakSelf.netWorkState = JZTUNiNetWorkStatusReachable3G4G;
+                    [weakSelf stopDownload];
+                    break;
+            case AFNetworkReachabilityStatusReachableViaWiFi:
+                    NSLog(@"WiFi");
+                    weakSelf.netWorkState = JZTUNiNetWorkStatusReachableViaWiFi;
+                    [weakSelf reuseDownload];
+                    break;
+            default:
+                    break;
+            }
+    }];
+    [manager startMonitoring];
 }
 
 @end

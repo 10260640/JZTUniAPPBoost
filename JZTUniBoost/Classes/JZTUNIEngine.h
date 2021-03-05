@@ -20,6 +20,16 @@ typedef enum : NSUInteger {
     JZTCONCURRENT, //并行
 } JZTQUEUEType;
 
+
+typedef enum :NSUInteger
+{
+    JZTUniNetWorkStatusUnknown,
+    JZTUniNetWorkStatusNotReachable,
+    JZTUNiNetWorkStatusReachable3G4G,
+    JZTUNiNetWorkStatusReachableViaWiFi,
+}
+JZTUniNetWorkState;
+
 @interface JZTUniAppModel : NSObject
 
 @property (strong,nonatomic) NSString *appId;

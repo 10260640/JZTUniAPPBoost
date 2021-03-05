@@ -126,7 +126,7 @@
             NSLog(@"下载完成");
         }
         else{
-            NSLog(@"强行中断");
+            NSLog(@"中断");
         }
     }];
     __block NSInteger fileLength;
@@ -175,5 +175,14 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     [fileManager removeItemAtPath:path error:nil];
 }
+
+
++ (void)removeAllApps
+{
+    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/apps"];
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    [fileManager removeItemAtPath:path error:nil];
+}
+
 
 @end

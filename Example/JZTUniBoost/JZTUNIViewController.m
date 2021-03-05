@@ -20,6 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [JZTUNIEngine sharedInstance];
 //    [self checkUniMPResource];
 //    [self setUniMPMenuItems];
 }
@@ -92,6 +93,11 @@
     } faile:^(NSString * _Nonnull msg, JZTUNIErrorType errorType) {
         
     }];
+}
+
+- (IBAction)click2:(id)sender
+{
+    [JZTUniAppManager removeAllApps];
 }
 
 @end
