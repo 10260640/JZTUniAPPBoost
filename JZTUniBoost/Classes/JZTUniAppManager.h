@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
                     destination:(void (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination
                             completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
+
+
 + (void)removeTempFile:(NSString*)urlStr;
 
 + (void)removeAllApps;

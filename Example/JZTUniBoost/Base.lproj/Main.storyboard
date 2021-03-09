@@ -45,9 +45,17 @@
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hp-Vy-7Lm">
                                 <rect key="frame" x="81" y="213" width="106" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="删除APP"/>
+                                <state key="normal" title="全部中断"/>
                                 <connections>
                                     <action selector="click2:" destination="whP-gf-Uak" eventType="touchUpInside" id="bjc-fW-FxL"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qZu-Y0-SGB">
+                                <rect key="frame" x="102" y="259" width="64" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="删除 APP"/>
+                                <connections>
+                                    <action selector="click3:" destination="whP-gf-Uak" eventType="touchUpInside" id="K7w-tx-5rn"/>
                                 </connections>
                             </button>
                         </subviews>

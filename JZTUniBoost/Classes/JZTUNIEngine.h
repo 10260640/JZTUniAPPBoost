@@ -53,9 +53,13 @@ JZTUniNetWorkState;
 
 - (void)backGroundDownload:(NSArray<JZTUniAppModel*>*)downLoadList queueType:(JZTQUEUEType)queueType;
 
+- (void)configNetWork;
+
 - (void)stopDownload;
 
 - (void)reuseDownload;
+
+- (void)testCancel;
 
 
 @end

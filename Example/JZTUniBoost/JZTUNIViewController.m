@@ -20,7 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [JZTUNIEngine sharedInstance];
+    [[JZTUNIEngine sharedInstance] configNetWork];
 //    [self checkUniMPResource];
 //    [self setUniMPMenuItems];
 }
@@ -43,7 +43,7 @@
         for (NSDictionary *dc in array) {
             [list addObject:[JZTUniAppModel modelWithJSON:dc]];
         }
-        [[JZTUNIEngine sharedInstance] backGroundDownload:list queueType:JZTCONCURRENT];
+        [[JZTUNIEngine sharedInstance] backGroundDownload:list queueType:JZTSERIAL];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
     }];
@@ -97,7 +97,14 @@
 
 - (IBAction)click2:(id)sender
 {
+    
+    [[JZTUNIEngine sharedInstance] testCancel];
+}
+
+- (IBAction)click3:(id)sender
+{
     [JZTUniAppManager removeAllApps];
+    
 }
 
 @end

@@ -20,6 +20,7 @@
     dispatch_group_t group;
     dispatch_queue_t queue;
     dispatch_queue_t squeue;
+    dispatch_semaphore_t semaphore;
 }
 @property (strong,atomic) NSMutableArray<NSURLSessionDataTask*> *taskList;
 @property (strong,atomic) NSMutableArray<JZTUniAppModel*> *modelList;
@@ -27,6 +28,8 @@
 @property (nonatomic,strong) JZTUniAppLoadingVC *loadingVC;
 @property (nonatomic,strong) NSURLSessionDataTask *cureentTask;
 @property (nonatomic) JZTUniNetWorkState netWorkState;
+@property (nonatomic) BOOL isLock;
+@property (nonatomic) JZTQUEUEType queueType;
 @end
 
 @implementation JZTUNIEngine
@@ -46,8 +49,7 @@
         group=dispatch_group_create();
         queue = dispatch_queue_create("com.jztuni.download", DISPATCH_QUEUE_CONCURRENT);
         squeue = dispatch_queue_create("com.jztuni.sdonwload", DISPATCH_QUEUE_SERIAL);
-        self.taskList = [NSMutableArray arrayWithCapacity:0];
-        [self configNetWork];
+        self.taskList = [[NSMutableArray alloc] initWithCapacity:0];
     }
     return self;
 }
@@ -72,14 +74,18 @@
             [self.cureentTask cancel];
             self.cureentTask = nil;
         }
-        
-        [self removeDownLoadTask:model.downUrl];
+        if (self.queueType == JZTSERIAL) {
+            [self removeAllTask];
+        }
+        else{
+            [self removeDownLoadTask:model.downUrl];
+        }
         if (self.netWorkState == JZTUNiNetWorkStatusReachable3G4G) {
-            [self stopDownload];
+            [self removeAllTask];
         }
         else if(self.netWorkState == JZTUniNetWorkStatusUnknown || self.netWorkState == JZTUniNetWorkStatusNotReachable)
         {
-            [self cancelAll];
+            [self removeAllTask];
         }
         
         if (exists && [self canUpdate:model]) {
@@ -180,7 +186,7 @@
         faile(msg,errorType);
     }])
     {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [DCUniMPSDKEngine openUniMP:appID configuration:configuration completed:^(DCUniMPInstance * _Nullable uniMPInstance, NSError * _Nullable error) {
                 if (uniMPInstance) {
                     weakSelf.uniMPInstance = uniMPInstance;
@@ -279,14 +285,16 @@
 
 - (void)removeAllTask
 {
-    if (self.taskList && self.taskList.count) {
-        for (NSURLSessionDataTask *task in self.taskList) {
-            [task cancel];
-        }
-        [self.taskList removeAllObjects];
-        self.taskList = nil;
+    self.isLock = NO;
+    if (semaphore) {
+        dispatch_semaphore_signal(semaphore);
     }
-    self.taskList = [NSMutableArray arrayWithCapacity:0];
+    for (NSURLSessionDataTask *task in self.taskList) {
+        [task cancel];
+    }
+    [self.taskList removeAllObjects];
+    [self.modelList removeAllObjects];
+    
 }
 
 - (NSArray<JZTUniAppModel*>*)getDownLoadList:(NSArray<JZTUniAppModel*>*)downLoadList
@@ -304,18 +312,20 @@
 
 - (void)backGroundDownload:(NSArray<JZTUniAppModel*>*)downLoadList queueType:(JZTQUEUEType)queueType;
 {
+    self.queueType = queueType;
     if (self.netWorkState != JZTUNiNetWorkStatusReachableViaWiFi) {
+        NSLog(@"无需下载");
         return;
     }
     NSArray<JZTUniAppModel*> *modelList = [self getDownLoadList:downLoadList];
-    if (!modelList.count) {
+    self.modelList = [NSMutableArray arrayWithArray:modelList];
+    if (!self.modelList.count) {
+        NSLog(@"无需下载");
         return;
     }
-    self.modelList = [NSMutableArray arrayWithArray:modelList];
-    __weak __typeof(self)weakSelf = self;
     
+    __weak __typeof(self)weakSelf = self;
     if (queueType == JZTCONCURRENT) {
-//        dispatch_semaphore_t semaphore = dispatch_semaphore_create(modelList.count==1?1:2);
         for (JZTUniAppModel *model in modelList) {
             dispatch_group_enter(group);
             dispatch_group_async(group, queue, ^{
@@ -326,33 +336,33 @@
                     
                 } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                     dispatch_group_leave(strongSelf->group);
-//                    dispatch_semaphore_signal(semaphore);
                 }];
                 [self.taskList addObject:task];
-//                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
             });
         }
     }
     else{
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0); //线程队列下载
+        semaphore = dispatch_semaphore_create(0);
+        self.isLock = YES;
         for (JZTUniAppModel *model in modelList) {
             dispatch_group_async(group, squeue, ^{
+                __strong __typeof(self) strongSelf = weakSelf;
                 NSURLSessionDataTask *task = [JZTUniAppManager downloadreUseApp:model.downUrl progress:^(double downloadProgressValue) {
                     
                 } destination:^(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-                    
+
                 } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-                    dispatch_semaphore_signal(semaphore);
+                    dispatch_semaphore_signal(strongSelf->semaphore);
                 }];
                 [self.taskList addObject:task];
-                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                if (strongSelf.isLock) {
+                    dispatch_semaphore_wait(self->semaphore, DISPATCH_TIME_FOREVER);
+                }
             });
         }
     }
-
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         [weakSelf removeAllTask];
-        [weakSelf.modelList removeAllObjects];
     });
 }
 
@@ -416,6 +426,7 @@
     return NO;
 }
 
+
 - (void)stopDownload
 {
     for (NSURLSessionDataTask *task in self.taskList) {
@@ -427,7 +438,7 @@
 - (void)reuseDownload
 {
     if (self.modelList.count) {
-        [self backGroundDownload:self.modelList queueType:JZTCONCURRENT];
+        [self backGroundDownload:self.modelList queueType:JZTSERIAL];
     }
 }
 
@@ -471,6 +482,11 @@
             }
     }];
     [manager startMonitoring];
+}
+
+- (void)testCancel
+{
+    [self removeAllTask];
 }
 
 @end

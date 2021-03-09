@@ -84,6 +84,8 @@
 + (NSURLSessionDataTask*)downloadreUseApp:(NSString*)urlStr progress:(void (^)(double downloadProgressValue))progress
                     destination:(void (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination
                     completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler
+                    
+
 
 {
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
@@ -122,12 +124,13 @@
 //            [fileManager copyItemAtPath:path toPath:savePath error:nil];
 //            [fileManager removeItemAtPath:path error:nil];
             [fileManager replaceItemAtURL:[NSURL URLWithString:savePath] withItemAtURL:[NSURL URLWithString:path] backupItemName:nil options:NSFileManagerItemReplacementUsingNewMetadataOnly resultingItemURL:nil error:nil];
-            completionHandler(task.response,nil,error);
+            
             NSLog(@"下载完成");
         }
         else{
             NSLog(@"中断");
         }
+        completionHandler(task.response,nil,error);
     }];
     __block NSInteger fileLength;
     [manager setDataTaskDidReceiveResponseBlock:^NSURLSessionResponseDisposition(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSURLResponse * _Nonnull response) {
