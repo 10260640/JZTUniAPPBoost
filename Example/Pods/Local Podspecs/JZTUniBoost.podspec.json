@@ -43,7 +43,8 @@
     "CoreTelephony",
     "AssetsLibrary",
     "CoreLocation",
-    "AddressBook"
+    "AddressBook",
+    "Photos"
   ],
   "resources": "JZTUniBoost/Assets/Resources/*.*",
   "dependencies": {

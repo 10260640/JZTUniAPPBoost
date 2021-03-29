@@ -103,7 +103,9 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/weex-polyfill.js"
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/weexUniJs.js"
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/__uniappes6.js"
+  install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/DCTZImagePickerController.bundle"
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/PandoraApi.bundle"
+  install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/TZImagePickerController.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/JZTUniStoryboard.storyboard"
@@ -112,7 +114,9 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/weex-polyfill.js"
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/weexUniJs.js"
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/__uniappes6.js"
+  install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/DCTZImagePickerController.bundle"
   install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/PandoraApi.bundle"
+  install_resource "${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/TZImagePickerController.bundle"
 fi
 
 mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

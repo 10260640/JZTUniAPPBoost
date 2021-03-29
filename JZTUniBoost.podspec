@@ -36,7 +36,7 @@ TODO: Add long description of the pod here.
   s.ios.vendored_libraries = 'JZTUniBoost/SDKs/libraries/*.a'
   s.ios.vendored_frameworks = 'JZTUniBoost/SDKs/frameworks/*.framework'
   s.libraries ='c++'
-  s.frameworks ='JavaScriptCore','CoreMedia','MediaPlayer','AVFoundation','AVKit','GLKit','OpenGLES','CoreText','QuartzCore','CoreGraphics','QuickLook','CoreTelephony','AssetsLibrary','CoreLocation','AddressBook'
+  s.frameworks ='JavaScriptCore','CoreMedia','MediaPlayer','AVFoundation','AVKit','GLKit','OpenGLES','CoreText','QuartzCore','CoreGraphics','QuickLook','CoreTelephony','AssetsLibrary','CoreLocation','AddressBook','Photos'
   s.resources = 'JZTUniBoost/Assets/Resources/*.*'
 
   # s.resource_bundles = {

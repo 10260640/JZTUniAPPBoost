@@ -379,7 +379,9 @@
 				"${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/weex-polyfill.js",
 				"${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/weexUniJs.js",
 				"${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/__uniappes6.js",
+				"${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/DCTZImagePickerController.bundle",
 				"${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/PandoraApi.bundle",
+				"${PODS_ROOT}/../../JZTUniBoost/Assets/Resources/TZImagePickerController.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -389,7 +391,9 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/weex-polyfill.js",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/weexUniJs.js",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/__uniappes6.js",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/DCTZImagePickerController.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PandoraApi.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TZImagePickerController.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
