@@ -12,7 +12,6 @@
 
 #import "JZTUniAppLoadingVC.h"
 #import "JZTUniAppManager.h"
-#import "JZTUniAppVC.h"
 #import "JZTUNIEngine.h"
 #import "DCUniMP.h"
 #import "DCUniMPConfiguration.h"

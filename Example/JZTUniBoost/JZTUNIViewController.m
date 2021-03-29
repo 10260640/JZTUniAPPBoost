@@ -79,8 +79,8 @@
 - (IBAction)click1:(id)sender
 {
     JZTUniAppModel *model = [[JZTUniAppModel alloc] init];
-    model.appId = @"__UNI__11E9B73";
-    model.downUrl = @"http://139.199.87.192/resource/__UNI__11E9B73.wgt";
+    model.appId = @"__UNI__8908E02";
+    model.downUrl = @"http://139.199.87.192/resource/__UNI__8908E02.wgt";
     model.hasUpdate = true;
     model.versionCode = 100;
     
