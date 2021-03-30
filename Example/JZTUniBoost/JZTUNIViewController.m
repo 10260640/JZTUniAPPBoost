@@ -78,21 +78,29 @@
 
 - (IBAction)click1:(id)sender
 {
-    JZTUniAppModel *model = [[JZTUniAppModel alloc] init];
-    model.appId = @"__UNI__11E9B73";
-    model.downUrl = @"http://139.199.87.192/resource/__UNI__11E9B73.wgt";
-    model.hasUpdate = true;
-    model.versionCode = 100;
+//    JZTUniAppModel *model = [[JZTUniAppModel alloc] init];
+//    model.appId = @"__UNI__11E9B73";
+//    model.downUrl = @"http://139.199.87.192/resource/__UNI__11E9B73.wgt";
+//    model.hasUpdate = true;
+//    model.versionCode = 100;
+//
+//    [[JZTUNIEngine sharedInstance] openAppWithModel:model success:^{
+//
+//    } progress:^(double downloadProgressValue) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            self.lb.text = [NSString stringWithFormat:@"下载进度：%.0f％",downloadProgressValue];
+//        });
+//    } faile:^(NSString * _Nonnull msg, JZTUNIErrorType errorType) {
+//
+//    }];
     
-    [[JZTUNIEngine sharedInstance] openAppWithModel:model success:^{
+    [[JZTUNIEngine sharedInstance] openAppWithAppID:@"__UNI__9F66C08" success:^{
         
-    } progress:^(double downloadProgressValue) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.lb.text = [NSString stringWithFormat:@"下载进度：%.0f％",downloadProgressValue];
-        });
     } faile:^(NSString * _Nonnull msg, JZTUNIErrorType errorType) {
         
     }];
+    
+    
 }
 
 - (IBAction)click2:(id)sender

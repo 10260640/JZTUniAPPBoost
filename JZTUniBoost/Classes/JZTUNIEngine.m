@@ -114,12 +114,33 @@
 
 - (void)openAppWithAppID:(NSString*)appID success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile
 {
-    [self releaseApp:appID];
-    [self openUniMP:appID success:^{
-        success();
-    } faile:^(NSString *msg, JZTUNIErrorType errorType) {
-        faile(msg,errorType);
-    }];
+    // 获取配置信息
+    DCUniMPConfiguration *configuration = [self getUniMPConfiguration];
+    __weak __typeof(self)weakSelf = self;
+   
+    
+    NSString *appResourcePath = [[NSBundle mainBundle] pathForResource:appID ofType:@"wgt"];
+    if (!appResourcePath) {
+        NSLog(@"资源路径不正确，请检查");
+        return;
+    }
+    // 将应用资源部署到运行路径中
+    if ([DCUniMPSDKEngine releaseAppResourceToRunPathWithAppid:appID resourceFilePath:appResourcePath]) {
+        NSLog(@"应用资源文件部署成功");
+    }
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [DCUniMPSDKEngine openUniMP:appID configuration:configuration completed:^(DCUniMPInstance * _Nullable uniMPInstance, NSError * _Nullable error) {
+            if (uniMPInstance) {
+                weakSelf.uniMPInstance = uniMPInstance;
+                success();
+            } else {
+                NSString *msg = [NSString stringWithFormat:@"打开小程序出错：%@",error];
+                faile(msg,JZTUNIAppOpenError);
+            }
+        }];
+    });
+    
 }
 
 - (BOOL)releaseApp:(NSString*)appID faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile
