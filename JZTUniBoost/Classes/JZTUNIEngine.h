@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DCUniMP.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -41,7 +42,18 @@ JZTUniNetWorkState;
 
 @end
 
+@protocol JZTUNIEngineDelegate <NSObject>
+/// 监听小程序发送的事件回调方法
+/// @param event 事件
+/// @param data 参数
+/// @param callback 回调方法，回传数据给小程序
+- (void)onUniMPEventReceive:(NSString *)event data:(id)data callback:(DCUniMPKeepAliveCallback)callback;
+
+@end
+
 @interface JZTUNIEngine : NSObject
+
+@property (nonatomic, assign) id <JZTUNIEngineDelegate> delegate;
 
 + (instancetype)sharedInstance;
 

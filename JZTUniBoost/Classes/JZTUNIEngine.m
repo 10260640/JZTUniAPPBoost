@@ -6,7 +6,6 @@
 //
 
 #import "JZTUNIEngine.h"
-#import "DCUniMP.h"
 #import "JZTUniAppLoadingVC.h"
 #import "JZTUniAppManager.h"
 #import <AFNetworking/AFNetworkReachabilityManager.h>
@@ -128,6 +127,9 @@
     if ([DCUniMPSDKEngine releaseAppResourceToRunPathWithAppid:appID resourceFilePath:appResourcePath]) {
         NSLog(@"应用资源文件部署成功");
     }
+    
+    [DCUniMPSDKEngine setDelegate:self];
+
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [DCUniMPSDKEngine openUniMP:appID configuration:configuration completed:^(DCUniMPInstance * _Nullable uniMPInstance, NSError * _Nullable error) {
@@ -192,7 +194,7 @@
     // 配置小程序启动后直接打开的页面路径 例："pages/component/view/view?a=1&b=2"
     configuration.redirectPath = nil;
     // 开启后台运行
-    configuration.enableBackground = YES;
+    configuration.enableBackground = NO;
     
     return configuration;
 }
@@ -299,9 +301,13 @@
     NSLog(@"Receive UniMP event: %@ data: %@",event,data);
     // 回传数据给小程序
     // DCUniMPKeepAliveCallback 用法请查看定义说明
-    if (callback) {
-        callback(@"native callback message",NO);
+    if (self.delegate) {
+        [self.delegate onUniMPEventReceive:event data:data callback:callback];
     }
+//    if (callback) {
+//        callback(@"JZTUniBoost",NO);
+//    }
+    
 }
 
 - (void)removeAllTask

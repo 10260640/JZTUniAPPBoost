@@ -11,7 +11,7 @@
 #import "JZTUNIEngine.h"
 #import <AFNetworking/AFNetworking.h>
 #import <YYKit.h>
-@interface JZTUNIViewController ()
+@interface JZTUNIViewController () <JZTUNIEngineDelegate>
 @property (weak,nonatomic) IBOutlet UILabel *lb;
 @end
 
@@ -20,7 +20,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [[JZTUNIEngine sharedInstance] configNetWork];
+    [JZTUNIEngine sharedInstance].delegate = self;
 //    [self checkUniMPResource];
 //    [self setUniMPMenuItems];
 }
@@ -94,7 +96,7 @@
 //
 //    }];
     
-    [[JZTUNIEngine sharedInstance] openAppWithAppID:@"__UNI__9F66C08" success:^{
+    [[JZTUNIEngine sharedInstance] openAppWithAppID:@"__UNI__83A7C18" success:^{
         
     } faile:^(NSString * _Nonnull msg, JZTUNIErrorType errorType) {
         
@@ -113,6 +115,11 @@
 {
     [JZTUniAppManager removeAllApps];
     
+}
+
+- (void)onUniMPEventReceive:(NSString *)event data:(id)data callback:(DCUniMPKeepAliveCallback)callback {
+    NSLog(@"Receive UniMP event: %@ data: %@",event,data);
+
 }
 
 @end
