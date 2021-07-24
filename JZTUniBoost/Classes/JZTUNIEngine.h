@@ -53,7 +53,7 @@ JZTUniNetWorkState;
 
 @interface JZTUNIEngine : NSObject
 
-@property (nonatomic, assign) id <JZTUNIEngineDelegate> delegate;
+@property (nonatomic, weak) id <JZTUNIEngineDelegate> delegate;
 
 + (instancetype)sharedInstance;
 

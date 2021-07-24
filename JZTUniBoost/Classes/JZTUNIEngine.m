@@ -193,9 +193,11 @@
     configuration.arguments = @{ @"arguments":@"Hello uni microprogram" };
     // 配置小程序启动后直接打开的页面路径 例："pages/component/view/view?a=1&b=2"
     configuration.redirectPath = nil;
-    // 开启后台运行
-    configuration.enableBackground = NO;
-    
+    // 打开小程序的方式
+    configuration.openMode = DCUniMPOpenModePush;
+    // 开启侧滑手势关闭小程序
+//    configuration.enableGestureClose = YES;
+
     return configuration;
 }
 
