@@ -126,6 +126,10 @@ typedef void (^DCUniMPKeepAliveCallback)(id result, BOOL keepAlive);
 /// @param hidden 是否隐藏
 + (void)whenUniMPCloseSetNavigationBarHidden:(BOOL)hidden;
 
+/// 设置 push 打开方式小程序内是否自动控制原生导航栏的显隐（默认控制）
+/// @param isControl Bool
++ (void)setAutoControlNavigationBar:(BOOL)isControl;
+
 #pragma mark - 胶囊按钮相关方法
 
 /// 设置导航栏上的胶囊按钮显示还是隐藏（默认显示）
