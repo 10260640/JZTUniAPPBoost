@@ -29,6 +29,8 @@
 @property (nonatomic) JZTUniNetWorkState netWorkState;
 @property (nonatomic) BOOL isLock;
 @property (nonatomic) JZTQUEUEType queueType;
+@property (nonatomic,strong) NSString *redirectPath;
+@property (nonatomic,strong) NSDictionary *arguments;
 @end
 
 @implementation JZTUNIEngine
@@ -113,11 +115,24 @@
 
 - (void)openAppWithAppID:(NSString*)appID success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile
 {
+    
+    [self openAppWithAppID:appID withRedirectPath:@"" withArguments:nil success:^{
+        success();
+    } faile:^(NSString * _Nonnull msg, JZTUNIErrorType errorType) {
+        faile(msg,errorType);
+    }]
+    
+}
+
+- (void)openAppWithAppID:(NSString *)appID withRedirectPath:(NSString *)redirectPath withArguments:(NSString *)arguments success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile {
     // 获取配置信息
+    self.redirectPath = redirectPath ?: @"";
+    if (arguments) {
+        self.arguments = arguments;
+    }
     DCUniMPConfiguration *configuration = [self getUniMPConfiguration];
     __weak __typeof(self)weakSelf = self;
    
-    
     NSString *appResourcePath = [[NSBundle mainBundle] pathForResource:appID ofType:@"wgt"];
     if (!appResourcePath) {
         NSLog(@"资源路径不正确，请检查");
@@ -130,7 +145,6 @@
     
     [DCUniMPSDKEngine setDelegate:self];
 
-
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [DCUniMPSDKEngine openUniMP:appID configuration:configuration completed:^(DCUniMPInstance * _Nullable uniMPInstance, NSError * _Nullable error) {
             if (uniMPInstance) {
@@ -142,7 +156,6 @@
             }
         }];
     });
-    
 }
 
 - (BOOL)releaseApp:(NSString*)appID faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile
@@ -192,7 +205,10 @@
     // 配置启动小程序时传递的参数（参数可以在小程序中通过 plus.runtime.arguments 获取此参数）
     configuration.arguments = @{ @"arguments":@"Hello uni microprogram" };
     // 配置小程序启动后直接打开的页面路径 例："pages/component/view/view?a=1&b=2"
-    configuration.redirectPath = nil;
+    configuration.redirectPath = self.redirectPath;
+    if (self.arguments) {
+        configuration.arguments = self.arguments;
+    }
     // 打开小程序的方式
     configuration.openMode = DCUniMPOpenModePush;
     // 开启侧滑手势关闭小程序
