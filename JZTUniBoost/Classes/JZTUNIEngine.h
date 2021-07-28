@@ -60,7 +60,8 @@ JZTUniNetWorkState;
 - (void)openAppWithModel:(JZTUniAppModel *)model success:(void (^)(void))success
                 progress:(void (^)(double downloadProgressValue))progress
                    faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile;
-
+///打开小程序方法
+/// @param appID 小程序ID
 - (void)openAppWithAppID:(NSString*)appID success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile;
 ///打开小程序方法
 /// @param appID 小程序ID
