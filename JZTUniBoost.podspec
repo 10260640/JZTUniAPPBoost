@@ -25,7 +25,7 @@ TODO: Add long description of the pod here.
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { '8772037@qq.com' => '8772037@qq.com' }
-  s.source           = { :git => 'https://github.com/10260640/JZTUniAppBoost.git', :tag => s.version }
+  s.source           = { :git => 'https://github.com/10260640/JZTUniAppBoost.git', :tag => '1.0.3' }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'
