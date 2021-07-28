@@ -66,7 +66,7 @@ JZTUniNetWorkState;
 /// @param appID 小程序ID
 /// @param redirectPath 启动后直接打开的页面路径
 /// @param arguments 传入小程序参数
-- (void)openAppWithAppID:(NSString *)appID withRedirectPath:(NSString *)redirectPath withArguments:(NSString *)arguments success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile;
+- (void)openAppWithAppID:(NSString *)appID withRedirectPath:(NSString *)redirectPath withArguments:(NSDictionary *)arguments success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile;
 
 
 - (void)backGroundDownload:(NSArray<JZTUniAppModel*>*)downLoadList queueType:(JZTQUEUEType)queueType;

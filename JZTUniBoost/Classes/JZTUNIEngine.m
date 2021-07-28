@@ -120,11 +120,11 @@
         success();
     } faile:^(NSString * _Nonnull msg, JZTUNIErrorType errorType) {
         faile(msg,errorType);
-    }]
+    }];
     
 }
 
-- (void)openAppWithAppID:(NSString *)appID withRedirectPath:(NSString *)redirectPath withArguments:(NSString *)arguments success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile {
+- (void)openAppWithAppID:(NSString *)appID withRedirectPath:(NSString *)redirectPath withArguments:(NSDictionary *)arguments success:(void (^)(void))success faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile {
     // 获取配置信息
     self.redirectPath = redirectPath ?: @"";
     if (arguments) {
