@@ -19,11 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString*)appID:(NSString*)url;
 
-+ (NSURLSessionDownloadTask*)downloadApp:(NSString*)urlStr progress:(void (^)(double downloadProgressValue))progress
++ (NSURLSessionDownloadTask*)downloadApp:(NSString*)urlStr appId:(NSString *)appId progress:(void (^)(double downloadProgressValue))progress
                     destination:(void (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination
                        completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
-+ (NSURLSessionDataTask*)downloadreUseApp:(NSString*)urlStr progress:(void (^)(double downloadProgressValue))progress
++ (NSURLSessionDataTask*)downloadreUseApp:(NSString*)urlStr appId:(NSString *)appId  progress:(void (^)(double downloadProgressValue))progress
                     destination:(void (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination
                             completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 

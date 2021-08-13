@@ -39,6 +39,7 @@ JZTUniNetWorkState;
 @property (nonatomic) NSInteger versionCode;
 @property (strong,nonatomic) NSString *downUrl;
 @property (strong,nonatomic) NSString *md5;
+@property (nonatomic) NSInteger downloadStrategy; //下载策略1：不启动后台下载 ，2 ：仅WiFi，  3：所有网络状态
 
 @end
 

@@ -57,7 +57,7 @@
     return [[url lastPathComponent] stringByDeletingPathExtension];
 }
 
-+ (NSURLSessionDownloadTask*)downloadApp:(NSString*)urlStr progress:(void (^)(double downloadProgressValue))progress
++ (NSURLSessionDownloadTask*)downloadApp:(NSString*)urlStr appId:(NSString *)appId progress:(void (^)(double downloadProgressValue))progress
                     destination:(void (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination
                     completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler
 
@@ -66,8 +66,8 @@
     
     NSURL *url = [NSURL URLWithString:urlStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    NSString *path = [[urlStr lastPathComponent] stringByDeletingPathExtension];
-    NSString *filePath = [self appPath:path];
+//    NSString *path = [[urlStr lastPathComponent] stringByDeletingPathExtension];
+    NSString *filePath = [self appPath:appId];
     
     NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
         double downloadProgressValue = downloadProgress.fractionCompleted * 100;
@@ -87,7 +87,7 @@
     return downloadTask;
 }
 
-+ (NSURLSessionDataTask*)downloadreUseApp:(NSString*)urlStr progress:(void (^)(double downloadProgressValue))progress
++ (NSURLSessionDataTask*)downloadreUseApp:(NSString*)urlStr appId:(NSString *)appId progress:(void (^)(double downloadProgressValue))progress
                     destination:(void (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination
                     completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler
                     
@@ -98,8 +98,8 @@
     
     NSString *path = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:urlStr.lastPathComponent];
     
-    NSString *fileName = [[urlStr lastPathComponent] stringByDeletingPathExtension];
-    NSString *savePath = [self appPath:fileName];
+//    NSString *fileName = [[urlStr lastPathComponent] stringByDeletingPathExtension];
+    NSString *savePath = [self appPath:appId];
     
     __block NSFileHandle *fileHandle = nil;
     

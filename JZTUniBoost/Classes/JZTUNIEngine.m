@@ -92,7 +92,7 @@
         if (exists && [self canUpdate:model]) {
             [JZTUniAppManager removeTempFile:model.downUrl];
         }
-        self.cureentTask = [JZTUniAppManager downloadreUseApp:model.downUrl progress:^(double downloadProgressValue) {
+        self.cureentTask = [JZTUniAppManager downloadreUseApp:model.downUrl appId:model.appId progress:^(double downloadProgressValue) {
             progress(downloadProgressValue);
         } destination:^(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
 
@@ -358,10 +358,7 @@
 - (void)backGroundDownload:(NSArray<JZTUniAppModel*>*)downLoadList queueType:(JZTQUEUEType)queueType;
 {
     self.queueType = queueType;
-    if (self.netWorkState != JZTUNiNetWorkStatusReachableViaWiFi) {
-        NSLog(@"无需下载");
-        return;
-    }
+
     NSArray<JZTUniAppModel*> *modelList = [self getDownLoadList:downLoadList];
     self.modelList = [NSMutableArray arrayWithArray:modelList];
     if (!self.modelList.count) {
@@ -372,10 +369,18 @@
     __weak __typeof(self)weakSelf = self;
     if (queueType == JZTCONCURRENT) {
         for (JZTUniAppModel *model in modelList) {
+            //不启动后台下载
+            if (model.downloadStrategy == 1) {
+                continue;
+            }
+            //仅WiFi
+            if (model.downloadStrategy == 2 && self.netWorkState != JZTUNiNetWorkStatusReachableViaWiFi) {
+                continue;
+            }
             dispatch_group_enter(group);
             dispatch_group_async(group, queue, ^{
                 __strong __typeof(self) strongSelf = weakSelf;
-                NSURLSessionDataTask *task = [JZTUniAppManager downloadreUseApp:model.downUrl progress:^(double downloadProgressValue) {
+                NSURLSessionDataTask *task = [JZTUniAppManager downloadreUseApp:model.downUrl appId:model.appId progress:^(double downloadProgressValue) {
                     
                 } destination:^(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
                     
@@ -390,9 +395,17 @@
         semaphore = dispatch_semaphore_create(0);
         self.isLock = YES;
         for (JZTUniAppModel *model in modelList) {
+            //不启动后台下载
+            if (model.downloadStrategy == 1) {
+                continue;
+            }
+            //仅WiFi
+            if (model.downloadStrategy == 2 && self.netWorkState != JZTUNiNetWorkStatusReachableViaWiFi) {
+                continue;
+            }
             dispatch_group_async(group, squeue, ^{
                 __strong __typeof(self) strongSelf = weakSelf;
-                NSURLSessionDataTask *task = [JZTUniAppManager downloadreUseApp:model.downUrl progress:^(double downloadProgressValue) {
+                NSURLSessionDataTask *task = [JZTUniAppManager downloadreUseApp:model.downUrl appId:model.appId progress:^(double downloadProgressValue) {
                     
                 } destination:^(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
 
