@@ -20,7 +20,7 @@
 {
     NSString *wgt;
     if ([appID containsString:@"__UNI__"]) {
-        wgt = appID;
+        wgt = [NSString stringWithFormat:@"%@.wgt",appID];
     } else {
         wgt = [NSString stringWithFormat:@"__UNI__%@.wgt",appID];
     }
