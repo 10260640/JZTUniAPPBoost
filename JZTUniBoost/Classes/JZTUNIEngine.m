@@ -60,7 +60,7 @@
                    faile:(void (^)(NSString *msg ,JZTUNIErrorType errorType ))faile{
     
     __weak __typeof(self)weakSelf = self;
-    BOOL exists = [JZTUniAppManager existsApp:model.downUrl];
+    BOOL exists = [JZTUniAppManager existsApp:model.appId];
     NSString *appID = model.appId;
     if (exists && ![self canUpdate:model])
     {

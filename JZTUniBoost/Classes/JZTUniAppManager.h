@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString*)appRootPath;
 
-+ (BOOL)existsApp:(NSString*)url;
++ (BOOL)existsApp:(NSString*)appId;
 
 + (NSString*)appID:(NSString*)url;
 

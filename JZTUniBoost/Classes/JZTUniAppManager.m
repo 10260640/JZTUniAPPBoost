@@ -41,9 +41,15 @@
     return path;
 }
 
-+ (BOOL)existsApp:(NSString*)url
++ (BOOL)existsApp:(NSString*)appId
 {
-    NSString *filePath = [[self appRootPath] stringByAppendingPathComponent:[url lastPathComponent]];
+    NSString *wgt;
+    if ([appID containsString:@"__UNI__"]) {
+        wgt = [NSString stringWithFormat:@"%@.wgt",appID];
+    } else {
+        wgt = [NSString stringWithFormat:@"__UNI__%@.wgt",appID];
+    }
+    NSString *filePath = [[self appRootPath] stringByAppendingPathComponent:wgt];
     NSLog(@"%@",filePath);
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:filePath]) {
