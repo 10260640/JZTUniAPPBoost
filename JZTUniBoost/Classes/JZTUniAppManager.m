@@ -44,10 +44,10 @@
 + (BOOL)existsApp:(NSString*)appId
 {
     NSString *wgt;
-    if ([appID containsString:@"__UNI__"]) {
-        wgt = [NSString stringWithFormat:@"%@.wgt",appID];
+    if ([appId containsString:@"__UNI__"]) {
+        wgt = [NSString stringWithFormat:@"%@.wgt",appId];
     } else {
-        wgt = [NSString stringWithFormat:@"__UNI__%@.wgt",appID];
+        wgt = [NSString stringWithFormat:@"__UNI__%@.wgt",appId];
     }
     NSString *filePath = [[self appRootPath] stringByAppendingPathComponent:wgt];
     NSLog(@"%@",filePath);
