@@ -18,6 +18,12 @@
 
 + (NSString*)appPath:(NSString*)appID
 {
+    NSString *wgt;
+    if ([appID containsString:@"__UNI__"]) {
+        wgt = appID;
+    } else {
+        wgt = [NSString stringWithFormat:@"__UNI__%@.wgt",appID];
+    }
     NSString *path = [self appRootPath];
     BOOL isDir = NO;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -25,7 +31,7 @@
     if ( !(isDir == YES && existed == YES) ) {
         [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    NSString *filePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.wgt",appID]];
+    NSString *filePath = [path stringByAppendingPathComponent:wgt];
     return filePath;
 }
 
